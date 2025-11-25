@@ -41,18 +41,48 @@ const Login = ({ onLogin }) => {
     setPassword('')
   }
 
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    if (name === 'email') {
+      setEmail(value)
+      if (!value.trim()) {
+        setError('Por favor, ingresa un correo electrónico')
+        return
+      }
+      if (!validateEmail(value)) {
+        setError('Por favor, ingresa un correo electrónico válido')
+        return
+      }
+      setError('')
+      return
+    }
+    if (name === 'password') {
+      setPassword(value)
+      if (!value.trim()) {
+        setError('Por favor, ingresa una contraseña')
+        return
+      }
+      if (value.length < 4) {
+        setError('La contraseña debe tener al menos 4 caracteres')
+        return
+      }
+      setError('')
+    }
+  }
+
   return (
     <div className="login-container">
       <div className="login-box">
         <h2>Iniciar Sesión</h2>
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="login-form" noValidate>
           <div className="form-group">
             <label htmlFor="email">Correo Electrónico</label>
             <input
               type="email"
               id="email"
+              name="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
               placeholder="ejemplo@correo.com"
               autoComplete="email"
             />
@@ -63,8 +93,9 @@ const Login = ({ onLogin }) => {
             <input
               type="password"
               id="password"
+              name="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               placeholder="Ingresa tu contraseña"
               autoComplete="current-password"
             />
