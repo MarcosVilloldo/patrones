@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import './Login.css'
+import {LoginModel} from "./LoginModel";
+import {LoginPresenter} from "./LoginPresenter";
 
 const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState('')
+  const [model, setModel] = useState(new LoginModel())
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const presenter = new LoginPresenter(setModel, model)
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -15,12 +18,12 @@ const Login = ({ onLogin }) => {
     e.preventDefault()
     setError('')
 
-    if (!email.trim()) {
+    if (!presenter.model.email.trim()) {
       setError('Por favor, ingresa un correo electrónico')
       return
     }
 
-    if (!validateEmail(email)) {
+    if (!validateEmail(presenter.model.email)) {
       setError('Por favor, ingresa un correo electrónico válido')
       return
     }
@@ -35,16 +38,16 @@ const Login = ({ onLogin }) => {
       return
     }
 
-    onLogin(email)
+    onLogin(presenter.model.email)
     
-    setEmail('')
+    presenter.setEmail('')
     setPassword('')
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target
     if (name === 'email') {
-      setEmail(value)
+      presenter.setEmail(value)
       if (!value.trim()) {
         setError('Por favor, ingresa un correo electrónico')
         return
@@ -81,7 +84,7 @@ const Login = ({ onLogin }) => {
               type="email"
               id="email"
               name="email"
-              value={email}
+              value={presenter.model.email}
               onChange={handleChange}
               placeholder="ejemplo@correo.com"
               autoComplete="email"
